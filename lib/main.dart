@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wp/model/forecast_model.dart';
 import 'package:wp/model/weather_model.dart';
 import 'package:wp/page/add_info.dart';
 import 'package:wp/page/current_weather.dart';
@@ -28,6 +29,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   WeatherService _weatherService = WeatherService();
   Weather? _weather;
+  List<Forecast>? _forecast;
   bool _isLoading = false;
   String _city = "Addis Ababa";
   TextEditingController _cityController = TextEditingController();
@@ -45,8 +47,10 @@ class _HomePageState extends State<HomePage> {
 
     try {
       Weather weather = await _weatherService.fetchWeather(_city);
+      List<Forecast> forecast = await _weatherService.fetchForecast(_city);
       setState(() {
         _weather = weather;
+        _forecast = forecast;
       });
     } catch (e) {
       print(e);
@@ -118,7 +122,37 @@ class _HomePageState extends State<HomePage> {
                           SizedBox(
                             height: 20.0,
                           ),
-                          addInfo("${_weather!.wind}", "${_weather!.humidity}", "${_weather!.pressure}", "${_weather!.feels_like}")
+                          addInfo("${_weather!.wind}", "${_weather!.humidity}", "${_weather!.pressure}", "${_weather!.feels_like}"),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          Text(
+                            "5-Day Forecast",
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                          Divider(),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          _forecast != null
+                              ? Expanded(
+                                  child: ListView.builder(
+                                    itemCount: _forecast!.length,
+                                    itemBuilder: (context, index) {
+                                      Forecast forecast = _forecast![index];
+                                      return ListTile(
+                                        title: Text(forecast.date),
+                                        subtitle: Text(forecast.description),
+                                        trailing: Text("${forecast.temp}°C"),
+                                      );
+                                    },
+                                  ),
+                                )
+                              : Container(),
                         ],
                       )
                     : Center(child: Text('Failed to load weather')),
