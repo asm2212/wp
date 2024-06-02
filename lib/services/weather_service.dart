@@ -5,7 +5,7 @@ import 'package:wp/model/weather_model.dart';
 
 
 class WeatherService {
-  final String apiKey = '531cf0391607112755206afe56a159b7';
+  final String apiKey = '';your api
   final String baseUrl = 'https://api.openweathermap.org/data/2.5/weather';
    final String forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast';
 
