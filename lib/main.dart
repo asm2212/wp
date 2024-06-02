@@ -25,12 +25,12 @@ class HomePage extends StatefulWidget {
   @override
   State<HomePage> createState() => _HomePageState();
 }
-
 class _HomePageState extends State<HomePage> {
   WeatherService _weatherService = WeatherService();
   Weather? _weather;
   bool _isLoading = false;
   String _city = "Addis Ababa";
+  TextEditingController _cityController = TextEditingController();
 
   @override
   void initState() {
@@ -78,30 +78,52 @@ class _HomePageState extends State<HomePage> {
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
-          : _weather != null
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    currentWeather(Icons.wb_sunny_rounded, "${_weather!.temp}", _weather!.cityName ?? ""),
-                    SizedBox(
-                      height: 60.0,
-                    ),
-                    Text(
-                      "Additional Info",
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: _cityController,
+                    decoration: InputDecoration(
+                      labelText: 'Enter city name',
+                      suffixIcon: IconButton(
+                        icon: Icon(Icons.search),
+                        onPressed: () {
+                          setState(() {
+                            _city = _cityController.text;
+                          });
+                          _fetchWeather();
+                        },
                       ),
                     ),
-                    Divider(),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    addInfo("${_weather!.wind}", "${_weather!.humidity}", "${_weather!.pressure}", "${_weather!.feels_like}")
-                  ],
-                )
-              : Center(child: Text('Failed to load weather')),
+                  ),
+                ),
+                _weather != null
+                    ? Column(
+                        children: [
+                          currentWeather(Icons.wb_sunny_rounded, "${_weather!.temp}", _weather!.cityName ?? ""),
+                          SizedBox(
+                            height: 60.0,
+                          ),
+                          Text(
+                            "Additional Info",
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                          Divider(),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          addInfo("${_weather!.wind}", "${_weather!.humidity}", "${_weather!.pressure}", "${_weather!.feels_like}")
+                        ],
+                      )
+                    : Center(child: Text('Failed to load weather')),
+              ],
+            ),
     );
   }
 }
