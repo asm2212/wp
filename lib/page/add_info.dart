@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 
 Widget addInfo(
   String wind,
   String humidity,
   String pressure,
   String feels_like
-){
+) {
   return Container(
     width: double.infinity,
     padding: EdgeInsets.all(18),
